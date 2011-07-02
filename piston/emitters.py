@@ -40,6 +40,8 @@ try:
 except ImportError:
     import pickle
 
+re_choicedisp = re.compile('^get_(\w+)_display$')
+
 class Emitter(object):
     """
     Super emitter. All other emitters should subclass
@@ -215,7 +217,7 @@ class Emitter(object):
                         maybe = getattr(data, maybe_field, None)
                         if maybe:
                             if callable(maybe):
-                                if len(inspect.getargspec(maybe)[0]) == 1:
+                                if re_choicedisp.search(maybe_field) or len(inspect.getargspec(maybe)[0]) == 1:
                                     ret[maybe_field] = _any(maybe())
                             else:
                                 ret[maybe_field] = _any(maybe)
